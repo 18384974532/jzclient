@@ -9,8 +9,28 @@ public class Main : MonoBehaviour
 {
     public GameObject prefab;
     private List<GameObject> userObjs = new List<GameObject>();
-    private user script;
+    //由于玩家发送请求的时候需要知道是玩家调用的，比如聊天请求，所以这里的想法是将玩家的object等相应消息声明为全局变量，这样每次主动调用请求的时候就知道是玩家在调用
+    public static class User 
+    {
+        public static string name;
+        public static int id;
+    }
+
     // Start is called before the first frame update
+    private void _join_room(object data)
+    {
+        var req = new SprotoType.joinroom.request();
+        req.pos = 0;
+        string name = (string)data;
+        User.name = name;
+        req.name = name;
+        Debug.Log("send joinroom server");
+        NetSender.Send<Protocol.joinroom>(req);
+    }
+    private void Awake() {
+        EventManager.AddListener("get_name", _join_room);
+    }
+
     void Start()
     {
         NetCore.Init();
@@ -23,9 +43,9 @@ public class Main : MonoBehaviour
             Debug.Log("connect result: " + NetCore.connected);
             if(NetCore.connected)
             {
-                SendSayHello();
-                Chat();
-                joinRoom();
+                //SendSayHello();
+                //Chat();
+                //joinRoom();
             }
         });
         NetReceiver.AddHandler<Protocol.chatInfo>(chatInfoRsp);
@@ -36,9 +56,7 @@ public class Main : MonoBehaviour
     {
         SprotoType.chatInfo.request rsp = _ as SprotoType.chatInfo.request;
         Debug.LogFormat("get chatInfo msg: {0}", rsp.msg, rsp.sender);
-        GameObject sender = GameObject.Find(rsp.sender);
-        script = sender.GetComponent<user>();
-        script.getInfo(rsp.msg);
+        EventManager.Trigger("chat_info", rsp);
         //sender show msg
         return null;
     }
@@ -49,7 +67,8 @@ public class Main : MonoBehaviour
         Debug.LogFormat("get createuser msg: {0}", rsp.pos);
         System.Random r1 = new System.Random();
         int a = r1.Next(1,10);
-        GameObject objA = Instantiate(prefab, new Vector3(a,a-1,0), Quaternion.identity);
+        Debug.LogFormat("postion: {0}", a);
+        GameObject objA = Instantiate(prefab, new Vector3(a, 0, a - 1), Quaternion.identity);
         objA.name = rsp.name;
         return null;
     }
@@ -62,15 +81,6 @@ public class Main : MonoBehaviour
         return null;
     }
 
-    void joinRoom()
-    {
-        var req = new SprotoType.joinroom.request();
-        req.pos = 0;
-        req.name = req.name;
-        Debug.Log("send joinroom server");
-        NetSender.Send<Protocol.joinroom>(req);
-    }
-
     void SendSayHello()
     {
         var req = new SprotoType.sayhello.request();
@@ -80,18 +90,6 @@ public class Main : MonoBehaviour
         {
             var rsp = data as SprotoType.sayhello.response;
             Debug.LogFormat("server seyhello response, error_code: {0}, msg: {1}", rsp.error_code, rsp.msg);
-        });
-    }
-
-    void Chat()
-    {
-        var req = new SprotoType.chat.request();
-        req.msg = "test chat";
-        Debug.Log("chat msg to server");
-        NetSender.Send<Protocol.chat>(req, (data) =>
-        {
-            var rsp = data as SprotoType.chat.response;
-            Debug.LogFormat("server chat response, error_code: {0}, msg: {1}", rsp.error_code, rsp.msg);
         });
     }
 
