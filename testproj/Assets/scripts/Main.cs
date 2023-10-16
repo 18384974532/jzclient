@@ -10,10 +10,13 @@ public class Main : MonoBehaviour
     public GameObject prefab;
     private List<GameObject> userObjs = new List<GameObject>();
     //由于玩家发送请求的时候需要知道是玩家调用的，比如聊天请求，所以这里的想法是将玩家的object等相应消息声明为全局变量，这样每次主动调用请求的时候就知道是玩家在调用
-    public static class User 
+    public class User 
     {
         public static string name;
         public static int id;
+        //这里要改sproto的传参 传list和table的用法
+        public static float posx;
+        public static float posz;
     }
 
     // Start is called before the first frame update
@@ -24,6 +27,10 @@ public class Main : MonoBehaviour
         string name = (string)data;
         User.name = name;
         req.name = name;
+        System.Random r1 = new System.Random();
+        int a = r1.Next(1, 5);
+        req.posx = a;
+        req.posz = a + 1;
         Debug.Log("send joinroom server");
         NetSender.Send<Protocol.joinroom>(req);
     }
@@ -64,12 +71,10 @@ public class Main : MonoBehaviour
     SprotoTypeBase createUser(SprotoTypeBase _)
     {
         SprotoType.createuser.request rsp = _ as SprotoType.createuser.request;
-        Debug.LogFormat("get createuser msg: {0}", rsp.pos);
-        System.Random r1 = new System.Random();
-        int a = r1.Next(1,10);
-        Debug.LogFormat("postion: {0}", a);
-        GameObject objA = Instantiate(prefab, new Vector3(a, 0, a - 1), Quaternion.identity);
+        Debug.LogFormat("get createuser msg: {0}, {1}", rsp.pos, rsp.name);
+        GameObject objA = Instantiate(prefab, new Vector3(rsp.posx, 1, rsp.posz), Quaternion.identity);
         objA.name = rsp.name;
+        EventManager.Trigger("userCreate", rsp.name);
         return null;
     }
 

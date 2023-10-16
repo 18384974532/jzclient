@@ -20,14 +20,14 @@ public class MainUi : MonoBehaviour
         inputFiledChat.onEndEdit.AddListener(delegate {InputEndChat(inputFiledChat); });
     }
 
-    private void InputEnd(TMP_InputField inputFiled)
+    private void InputEnd(TMP_InputField inputField)
     {
-        UnityEngine.Debug.Log("press enter:" + inputFiled.text);
+        UnityEngine.Debug.Log("press enter:" + inputField.text);
         EventManager.Trigger("get_name", inputField.text);
         inputField.GetComponent<CanvasGroup>().alpha = 0;
     }
 
-    private void InputEndChat(TMP_InputField inputFiled)
+    private void InputEndChat(TMP_InputField inputField)
     {
         UnityEngine.Debug.Log("chat info"  + inputField.text);
         string msg = inputField.text;
@@ -37,7 +37,7 @@ public class MainUi : MonoBehaviour
     void Chat(string msg)
     {
         var req = new SprotoType.chat.request();
-        req.sender = User.name;
+        req.sender = Main.User.name;
         req.msg = msg;
         UnityEngine.Debug.Log("chat msg to server");
         NetSender.Send<Protocol.chat>(req, (data) =>
