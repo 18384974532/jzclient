@@ -33,22 +33,21 @@ chatInfo 4 {
   }
 }
 
+.User {
+      uid 0 : integer
+      name 1 : string
+      pos 2 : *integer
+    }
+
 joinroom 5 {
   request {
-    pos 0 : integer
-    name 1 : string
-    posx 2 : integer
-    posz 3 : integer
+    user 0 : User
   }
 }
 
 createuser 6 {
   request {
-    pos 0 : integer
-    name 1 : string
-    uid 2 : integer
-    posx 3 : integer
-    posz 4 : integer
+    user 0 : User
   }
 }
 

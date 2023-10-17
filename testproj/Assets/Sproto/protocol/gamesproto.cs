@@ -6,6 +6,83 @@ using Sproto;
 using System.Collections.Generic;
 
 namespace SprotoType { 
+	public class User : SprotoTypeBase {
+		private static int max_field_count = 3;
+		
+		
+		private Int64 _uid; // tag 0
+		public Int64 uid {
+			get { return _uid; }
+			set { base.has_field.set_field (0, true); _uid = value; }
+		}
+		public bool HasUid {
+			get { return base.has_field.has_field (0); }
+		}
+
+		private string _name; // tag 1
+		public string name {
+			get { return _name; }
+			set { base.has_field.set_field (1, true); _name = value; }
+		}
+		public bool HasName {
+			get { return base.has_field.has_field (1); }
+		}
+
+		private List<Int64> _pos; // tag 2
+		public List<Int64> pos {
+			get { return _pos; }
+			set { base.has_field.set_field (2, true); _pos = value; }
+		}
+		public bool HasPos {
+			get { return base.has_field.has_field (2); }
+		}
+
+		public User () : base(max_field_count) {}
+
+		public User (byte[] buffer) : base(max_field_count, buffer) {
+			this.decode ();
+		}
+
+		protected override void decode () {
+			int tag = -1;
+			while (-1 != (tag = base.deserialize.read_tag ())) {
+				switch (tag) {
+				case 0:
+					this.uid = base.deserialize.read_integer ();
+					break;
+				case 1:
+					this.name = base.deserialize.read_string ();
+					break;
+				case 2:
+					this.pos = base.deserialize.read_integer_list ();
+					break;
+				default:
+					base.deserialize.read_unknow_data ();
+					break;
+				}
+			}
+		}
+
+		public override int encode (SprotoStream stream) {
+			base.serialize.open (stream);
+
+			if (base.has_field.has_field (0)) {
+				base.serialize.write_integer (this.uid, 0);
+			}
+
+			if (base.has_field.has_field (1)) {
+				base.serialize.write_string (this.name, 1);
+			}
+
+			if (base.has_field.has_field (2)) {
+				base.serialize.write_integer (this.pos, 2);
+			}
+
+			return base.serialize.close ();
+		}
+	}
+
+
 	public class chat {
 	
 		public class request : SprotoTypeBase {
@@ -202,52 +279,16 @@ namespace SprotoType {
 	public class createuser {
 	
 		public class request : SprotoTypeBase {
-			private static int max_field_count = 5;
+			private static int max_field_count = 1;
 			
 			
-			private Int64 _pos; // tag 0
-			public Int64 pos {
-				get { return _pos; }
-				set { base.has_field.set_field (0, true); _pos = value; }
+			private User _user; // tag 0
+			public User user {
+				get { return _user; }
+				set { base.has_field.set_field (0, true); _user = value; }
 			}
-			public bool HasPos {
+			public bool HasUser {
 				get { return base.has_field.has_field (0); }
-			}
-
-			private string _name; // tag 1
-			public string name {
-				get { return _name; }
-				set { base.has_field.set_field (1, true); _name = value; }
-			}
-			public bool HasName {
-				get { return base.has_field.has_field (1); }
-			}
-
-			private Int64 _uid; // tag 2
-			public Int64 uid {
-				get { return _uid; }
-				set { base.has_field.set_field (2, true); _uid = value; }
-			}
-			public bool HasUid {
-				get { return base.has_field.has_field (2); }
-			}
-
-			private Int64 _posx; // tag 3
-			public Int64 posx {
-				get { return _posx; }
-				set { base.has_field.set_field (3, true); _posx = value; }
-			}
-			public bool HasPosx {
-				get { return base.has_field.has_field (3); }
-			}
-
-			private Int64 _posz; // tag 4
-			public Int64 posz {
-				get { return _posz; }
-				set { base.has_field.set_field (4, true); _posz = value; }
-			}
-			public bool HasPosz {
-				get { return base.has_field.has_field (4); }
 			}
 
 			public request () : base(max_field_count) {}
@@ -261,19 +302,7 @@ namespace SprotoType {
 				while (-1 != (tag = base.deserialize.read_tag ())) {
 					switch (tag) {
 					case 0:
-						this.pos = base.deserialize.read_integer ();
-						break;
-					case 1:
-						this.name = base.deserialize.read_string ();
-						break;
-					case 2:
-						this.uid = base.deserialize.read_integer ();
-						break;
-					case 3:
-						this.posx = base.deserialize.read_integer ();
-						break;
-					case 4:
-						this.posz = base.deserialize.read_integer ();
+						this.user = base.deserialize.read_obj<User> ();
 						break;
 					default:
 						base.deserialize.read_unknow_data ();
@@ -286,23 +315,7 @@ namespace SprotoType {
 				base.serialize.open (stream);
 
 				if (base.has_field.has_field (0)) {
-					base.serialize.write_integer (this.pos, 0);
-				}
-
-				if (base.has_field.has_field (1)) {
-					base.serialize.write_string (this.name, 1);
-				}
-
-				if (base.has_field.has_field (2)) {
-					base.serialize.write_integer (this.uid, 2);
-				}
-
-				if (base.has_field.has_field (3)) {
-					base.serialize.write_integer (this.posx, 3);
-				}
-
-				if (base.has_field.has_field (4)) {
-					base.serialize.write_integer (this.posz, 4);
+					base.serialize.write_obj (this.user, 0);
 				}
 
 				return base.serialize.close ();
@@ -316,43 +329,16 @@ namespace SprotoType {
 	public class joinroom {
 	
 		public class request : SprotoTypeBase {
-			private static int max_field_count = 4;
+			private static int max_field_count = 1;
 			
 			
-			private Int64 _pos; // tag 0
-			public Int64 pos {
-				get { return _pos; }
-				set { base.has_field.set_field (0, true); _pos = value; }
+			private User _user; // tag 0
+			public User user {
+				get { return _user; }
+				set { base.has_field.set_field (0, true); _user = value; }
 			}
-			public bool HasPos {
+			public bool HasUser {
 				get { return base.has_field.has_field (0); }
-			}
-
-			private string _name; // tag 1
-			public string name {
-				get { return _name; }
-				set { base.has_field.set_field (1, true); _name = value; }
-			}
-			public bool HasName {
-				get { return base.has_field.has_field (1); }
-			}
-
-			private Int64 _posx; // tag 2
-			public Int64 posx {
-				get { return _posx; }
-				set { base.has_field.set_field (2, true); _posx = value; }
-			}
-			public bool HasPosx {
-				get { return base.has_field.has_field (2); }
-			}
-
-			private Int64 _posz; // tag 3
-			public Int64 posz {
-				get { return _posz; }
-				set { base.has_field.set_field (3, true); _posz = value; }
-			}
-			public bool HasPosz {
-				get { return base.has_field.has_field (3); }
 			}
 
 			public request () : base(max_field_count) {}
@@ -366,16 +352,7 @@ namespace SprotoType {
 				while (-1 != (tag = base.deserialize.read_tag ())) {
 					switch (tag) {
 					case 0:
-						this.pos = base.deserialize.read_integer ();
-						break;
-					case 1:
-						this.name = base.deserialize.read_string ();
-						break;
-					case 2:
-						this.posx = base.deserialize.read_integer ();
-						break;
-					case 3:
-						this.posz = base.deserialize.read_integer ();
+						this.user = base.deserialize.read_obj<User> ();
 						break;
 					default:
 						base.deserialize.read_unknow_data ();
@@ -388,19 +365,7 @@ namespace SprotoType {
 				base.serialize.open (stream);
 
 				if (base.has_field.has_field (0)) {
-					base.serialize.write_integer (this.pos, 0);
-				}
-
-				if (base.has_field.has_field (1)) {
-					base.serialize.write_string (this.name, 1);
-				}
-
-				if (base.has_field.has_field (2)) {
-					base.serialize.write_integer (this.posx, 2);
-				}
-
-				if (base.has_field.has_field (3)) {
-					base.serialize.write_integer (this.posz, 3);
+					base.serialize.write_obj (this.user, 0);
 				}
 
 				return base.serialize.close ();

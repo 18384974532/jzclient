@@ -23,14 +23,17 @@ public class Main : MonoBehaviour
     private void _join_room(object data)
     {
         var req = new SprotoType.joinroom.request();
-        req.pos = 0;
+        var user = new SprotoType.User();
         string name = (string)data;
         User.name = name;
-        req.name = name;
         System.Random r1 = new System.Random();
         int a = r1.Next(1, 5);
-        req.posx = a;
-        req.posz = a + 1;
+        user.name = name;
+        List<long> pos = new List<long>();
+        pos.Add(a);
+        pos.Add(a+1);
+        user.pos = pos;
+        req.user = user;
         Debug.Log("send joinroom server");
         NetSender.Send<Protocol.joinroom>(req);
     }
@@ -71,12 +74,13 @@ public class Main : MonoBehaviour
     SprotoTypeBase createUser(SprotoTypeBase _)
     {
         SprotoType.createuser.request rsp = _ as SprotoType.createuser.request;
-        Debug.LogFormat("get createuser msg: {0}, {1}", rsp.pos, rsp.name);
-        GameObject objA = Instantiate(prefab, new Vector3(rsp.posx, 1, rsp.posz), Quaternion.identity);
+        var user = new SprotoType.User();
+        user = rsp.user;
+        Debug.LogFormat("get createuser msg: {0}", user.name);
+        GameObject objA = Instantiate(prefab, new Vector3(user.pos[0], 1, user.pos[1]), Quaternion.identity);
         Debug.LogFormat("user nmae: {0}", objA.name);
-        User.name = rsp.name;
         //objA.name = rsp.name;
-        EventManager.Trigger("userCreate", rsp.name);
+        EventManager.Trigger("userCreate", rsp.user.name);
         return null;
     }
 
