@@ -11,6 +11,7 @@ public class user : MonoBehaviour
     // Start is called before the first frame update
     public TMP_Text ChatInfo;
     public TMP_Text UserName;
+    public GameObject User;
     private void Awake() {
         EventManager.AddListener("chat_info", _chat_info);
         EventManager.AddListener("userCreate", _user_create);
@@ -26,17 +27,25 @@ public class user : MonoBehaviour
     private void _user_create(object data)
     {
         string name = (string)data;
-        UserName.text = name;
-        UserName.GetComponent<CanvasGroup>().alpha = 1;
+        Debug.LogFormat("username:{0}", User.name);
+        if(User.name == "Player")
+        {
+            Debug.LogFormat("username11:{0}", name);
+            User.name = name;
+            UserName.text = name;
+            UserName.GetComponent<CanvasGroup>().alpha = 1;
+        }
     }
     private void _chat_info(object data)
     {
         SprotoType.chatInfo.request rsp = (SprotoType.chatInfo.request)data;
-        GameObject user = GameObject.Find(rsp.sender);
-        string chat_msg = rsp.msg;
-        ChatInfo.GetComponent<CanvasGroup>().alpha = 1;
-        ChatInfo.text = chat_msg;
-        Invoke("disableChat", 3);
+        if(User.name == rsp.sender)
+        {
+            string chat_msg = rsp.msg;
+            ChatInfo.GetComponent<CanvasGroup>().alpha = 1;
+            ChatInfo.text = chat_msg;
+            Invoke("disableChat", 3);
+    }
     }
     void Start()
     {

@@ -62,7 +62,7 @@ public class Main : MonoBehaviour
     SprotoTypeBase chatInfoRsp(SprotoTypeBase _)
     {
         SprotoType.chatInfo.request rsp = _ as SprotoType.chatInfo.request;
-        Debug.LogFormat("get chatInfo msg: {0}", rsp.msg, rsp.sender);
+        Debug.LogFormat("get chatInfo msg: {0}, {1}", rsp.msg, rsp.sender);
         EventManager.Trigger("chat_info", rsp);
         //sender show msg
         return null;
@@ -73,7 +73,9 @@ public class Main : MonoBehaviour
         SprotoType.createuser.request rsp = _ as SprotoType.createuser.request;
         Debug.LogFormat("get createuser msg: {0}, {1}", rsp.pos, rsp.name);
         GameObject objA = Instantiate(prefab, new Vector3(rsp.posx, 1, rsp.posz), Quaternion.identity);
-        objA.name = rsp.name;
+        Debug.LogFormat("user nmae: {0}", objA.name);
+        User.name = rsp.name;
+        //objA.name = rsp.name;
         EventManager.Trigger("userCreate", rsp.name);
         return null;
     }

@@ -39,7 +39,7 @@ public class MainUi : MonoBehaviour
         var req = new SprotoType.chat.request();
         req.sender = Main.User.name;
         req.msg = msg;
-        UnityEngine.Debug.Log("chat msg to server");
+        UnityEngine.Debug.Log("chat msg to server sender:" + Main.User.name);
         NetSender.Send<Protocol.chat>(req, (data) =>
         {
             var rsp = data as SprotoType.chat.response;
