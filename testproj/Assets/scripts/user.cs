@@ -15,7 +15,22 @@ public class user : MonoBehaviour
     private void Awake() {
         EventManager.AddListener("chat_info", _chat_info);
         EventManager.AddListener("userCreate", _user_create);
+        EventManager.AddListener("quitRoom", _quit_room);
     }
+    private void _quit_room(object data)
+    {
+        string name = (string)data;
+        if(name == User.name)
+        {
+            var req = new SprotoType.quitroom.request();
+            req.name = User.name;
+            Debug.LogFormat("username:{0}", req.name);
+            NetSender.Send<Protocol.quitroom>(req);
+            Application.Quit();
+        }
+        
+    }
+
     public void getInfo(string msg)
     {
         Debug.LogFormat("user get chatInfo {0}", msg);
@@ -34,6 +49,7 @@ public class user : MonoBehaviour
             User.name = name;
             UserName.text = name;
             UserName.GetComponent<CanvasGroup>().alpha = 1;
+            EventManager.Trigger("usercreateUi");
         }
     }
     private void _chat_info(object data)

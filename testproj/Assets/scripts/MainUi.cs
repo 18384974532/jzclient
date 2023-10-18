@@ -13,25 +13,50 @@ public class MainUi : MonoBehaviour
 {
     public TMP_InputField inputField;
     public TMP_InputField inputFiledChat;
+    public Button quitButton;
+    public GameObject objName;
     // Start is called before the first frame update
     void Start()
     {
         inputField.onEndEdit.AddListener(delegate { InputEnd(inputField); });
         inputFiledChat.onEndEdit.AddListener(delegate {InputEndChat(inputFiledChat); });
+        quitButton.onClick.AddListener(OnClick);
+        EventManager.AddListener("usercreateUi", _user_create_ui);
+    }
+
+    private void _user_create_ui()
+    {
+        quitButton.GetComponent<CanvasGroup>().alpha = 1;
+        inputFiledChat.GetComponent<CanvasGroup>().alpha = 1;
+    }
+
+    private void OnClick()
+    {
+        EventManager.Trigger("quitRoom", Main.User.name);
     }
 
     private void InputEnd(TMP_InputField inputField)
     {
         UnityEngine.Debug.Log("press enter:" + inputField.text);
-        EventManager.Trigger("get_name", inputField.text);
-        inputField.GetComponent<CanvasGroup>().alpha = 0;
+        string msg = inputField.text;
+        if(msg!=string.Empty)
+        {
+            EventManager.Trigger("get_name", inputField.text);
+            //inputField.GetComponent<CanvasGroup>().alpha = 0;
+            objName.SetActive(false);
+        }
+        
     }
 
     private void InputEndChat(TMP_InputField inputField)
     {
         UnityEngine.Debug.Log("chat info"  + inputField.text);
         string msg = inputField.text;
-        Chat(msg);
+        if(msg!= string.Empty)
+        {
+            inputField.text = string.Empty;
+            Chat(msg);
+        }
     }
 
     void Chat(string msg)

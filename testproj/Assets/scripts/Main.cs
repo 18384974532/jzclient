@@ -23,20 +23,23 @@ public class Main : MonoBehaviour
     private void _join_room(object data)
     {
         var req = new SprotoType.joinroom.request();
-        var user = new SprotoType.User();
+        req.user = new SprotoType.User();
+
         string name = (string)data;
-        User.name = name;
+        req.user.name = name;
+
         System.Random r1 = new System.Random();
         int a = r1.Next(1, 5);
-        user.name = name;
         List<long> pos = new List<long>();
         pos.Add(a);
         pos.Add(a+1);
-        user.pos = pos;
-        req.user = user;
+        req.user.pos = pos;
+
+        User.name = name;
         Debug.Log("send joinroom server");
         NetSender.Send<Protocol.joinroom>(req);
     }
+
     private void Awake() {
         EventManager.AddListener("get_name", _join_room);
     }
@@ -60,6 +63,15 @@ public class Main : MonoBehaviour
         });
         NetReceiver.AddHandler<Protocol.chatInfo>(chatInfoRsp);
         NetReceiver.AddHandler<Protocol.createuser>(createUser);
+        NetReceiver.AddHandler<Protocol.deleteuser>(deleteUser);
+    }
+
+    SprotoTypeBase deleteUser(SprotoTypeBase _)
+    {
+        SprotoType.deleteuser.request rsp = _ as SprotoType.deleteuser.request;
+        string name = "pfb" + rsp.name;
+        Destroy(GameObject.Find(name));
+        return null;
     }
 
     SprotoTypeBase chatInfoRsp(SprotoTypeBase _)
@@ -79,7 +91,7 @@ public class Main : MonoBehaviour
         Debug.LogFormat("get createuser msg: {0}", user.name);
         GameObject objA = Instantiate(prefab, new Vector3(user.pos[0], 1, user.pos[1]), Quaternion.identity);
         Debug.LogFormat("user nmae: {0}", objA.name);
-        //objA.name = rsp.name;
+        objA.name = "pfb" + user.name;
         EventManager.Trigger("userCreate", rsp.user.name);
         return null;
     }

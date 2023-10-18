@@ -326,6 +326,56 @@ namespace SprotoType {
 	}
 
 
+	public class deleteuser {
+	
+		public class request : SprotoTypeBase {
+			private static int max_field_count = 1;
+			
+			
+			private string _name; // tag 0
+			public string name {
+				get { return _name; }
+				set { base.has_field.set_field (0, true); _name = value; }
+			}
+			public bool HasName {
+				get { return base.has_field.has_field (0); }
+			}
+
+			public request () : base(max_field_count) {}
+
+			public request (byte[] buffer) : base(max_field_count, buffer) {
+				this.decode ();
+			}
+
+			protected override void decode () {
+				int tag = -1;
+				while (-1 != (tag = base.deserialize.read_tag ())) {
+					switch (tag) {
+					case 0:
+						this.name = base.deserialize.read_string ();
+						break;
+					default:
+						base.deserialize.read_unknow_data ();
+						break;
+					}
+				}
+			}
+
+			public override int encode (SprotoStream stream) {
+				base.serialize.open (stream);
+
+				if (base.has_field.has_field (0)) {
+					base.serialize.write_string (this.name, 0);
+				}
+
+				return base.serialize.close ();
+			}
+		}
+
+
+	}
+
+
 	public class joinroom {
 	
 		public class request : SprotoTypeBase {
@@ -503,6 +553,56 @@ namespace SprotoType {
 	}
 
 
+	public class quitroom {
+	
+		public class request : SprotoTypeBase {
+			private static int max_field_count = 1;
+			
+			
+			private string _name; // tag 0
+			public string name {
+				get { return _name; }
+				set { base.has_field.set_field (0, true); _name = value; }
+			}
+			public bool HasName {
+				get { return base.has_field.has_field (0); }
+			}
+
+			public request () : base(max_field_count) {}
+
+			public request (byte[] buffer) : base(max_field_count, buffer) {
+				this.decode ();
+			}
+
+			protected override void decode () {
+				int tag = -1;
+				while (-1 != (tag = base.deserialize.read_tag ())) {
+					switch (tag) {
+					case 0:
+						this.name = base.deserialize.read_string ();
+						break;
+					default:
+						base.deserialize.read_unknow_data ();
+						break;
+					}
+				}
+			}
+
+			public override int encode (SprotoStream stream) {
+				base.serialize.open (stream);
+
+				if (base.has_field.has_field (0)) {
+					base.serialize.write_string (this.name, 0);
+				}
+
+				return base.serialize.close ();
+			}
+		}
+
+
+	}
+
+
 	public class sayhello {
 	
 		public class request : SprotoTypeBase {
@@ -630,6 +730,9 @@ public class Protocol : ProtocolBase {
 		Protocol.SetProtocol<createuser> (createuser.Tag);
 		Protocol.SetRequest<SprotoType.createuser.request> (createuser.Tag);
 
+		Protocol.SetProtocol<deleteuser> (deleteuser.Tag);
+		Protocol.SetRequest<SprotoType.deleteuser.request> (deleteuser.Tag);
+
 		Protocol.SetProtocol<heartbeat> (heartbeat.Tag);
 
 		Protocol.SetProtocol<joinroom> (joinroom.Tag);
@@ -637,6 +740,9 @@ public class Protocol : ProtocolBase {
 
 		Protocol.SetProtocol<playermove> (playermove.Tag);
 		Protocol.SetRequest<SprotoType.playermove.request> (playermove.Tag);
+
+		Protocol.SetProtocol<quitroom> (quitroom.Tag);
+		Protocol.SetRequest<SprotoType.quitroom.request> (quitroom.Tag);
 
 		Protocol.SetProtocol<sayhello> (sayhello.Tag);
 		Protocol.SetRequest<SprotoType.sayhello.request> (sayhello.Tag);
@@ -656,6 +762,10 @@ public class Protocol : ProtocolBase {
 		public const int Tag = 6;
 	}
 
+	public class deleteuser {
+		public const int Tag = 8;
+	}
+
 	public class heartbeat {
 		public const int Tag = 3;
 	}
@@ -666,6 +776,10 @@ public class Protocol : ProtocolBase {
 
 	public class playermove {
 		public const int Tag = 7;
+	}
+
+	public class quitroom {
+		public const int Tag = 9;
 	}
 
 	public class sayhello {

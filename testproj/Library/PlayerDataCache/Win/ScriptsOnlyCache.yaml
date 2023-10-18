@@ -22,6 +22,7 @@ ScriptsOnlyBuild:
     UnityEngine.UI.dll:
     - UnityEngine.EventSystems.EventSystem
     - UnityEngine.EventSystems.StandaloneInputModule
+    - UnityEngine.UI.Button
     - UnityEngine.UI.CanvasScaler
     - UnityEngine.UI.GraphicRaycaster
     - UnityEngine.UI.Image
@@ -77,6 +78,8 @@ ScriptsOnlyBuild:
       Script: {instanceID: 11864}
     - Class: 114
       Script: {instanceID: 11892}
+    - Class: 114
+      Script: {instanceID: 12264}
     - Class: 114
       Script: {instanceID: 12474}
     - Class: 114
@@ -152,7 +155,7 @@ ScriptsOnlyBuild:
     className: PlayerQuitHandler
   - hash:
       serializedVersion: 2
-      Hash: 87e3ea09e3cad79d42027ea6783b95bd
+      Hash: 2b7b6748b8af57b43e6ee0a870d62747
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: MainUi
