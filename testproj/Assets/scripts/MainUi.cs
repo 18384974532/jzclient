@@ -18,7 +18,7 @@ public class MainUi : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        inputField.onEndEdit.AddListener(delegate { InputEnd(inputField); });
+        inputField.onEndEdit.AddListener(delegate { InputEndName(inputField); });
         inputFiledChat.onEndEdit.AddListener(delegate {InputEndChat(inputFiledChat); });
         quitButton.onClick.AddListener(OnClick);
         EventManager.AddListener("usercreateUi", _user_create_ui);
@@ -35,7 +35,7 @@ public class MainUi : MonoBehaviour
         EventManager.Trigger("quitRoom", Main.User.name);
     }
 
-    private void InputEnd(TMP_InputField inputField)
+    private void InputEndName(TMP_InputField inputField)
     {
         UnityEngine.Debug.Log("press enter:" + inputField.text);
         string msg = inputField.text;

@@ -50,6 +50,7 @@ public class user : MonoBehaviour
             UserName.text = name;
             UserName.GetComponent<CanvasGroup>().alpha = 1;
             EventManager.Trigger("usercreateUi");
+            EventManager.Trigger("setCamera", name);
         }
     }
     private void _chat_info(object data)
