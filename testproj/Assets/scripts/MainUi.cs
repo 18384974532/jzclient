@@ -9,30 +9,27 @@ using UnityEngine.Events;
 using Sproto;
 using SprotoType;
 
+using UnityEngine.InputSystem;
+
 public class MainUi : MonoBehaviour
 {
     public TMP_InputField inputField;
     public TMP_InputField inputFiledChat;
-    public Button quitButton;
     public GameObject objName;
+    public GameObject EscMenu;
+    public GameObject ChatContent;
+    public static bool PlayerIsChat = false;
     // Start is called before the first frame update
     void Start()
     {
         inputField.onEndEdit.AddListener(delegate { InputEndName(inputField); });
-        inputFiledChat.onEndEdit.AddListener(delegate {InputEndChat(inputFiledChat); });
-        quitButton.onClick.AddListener(OnClick);
+        UnityEngine.Debug.Log("init name input" + inputField.text);
         EventManager.AddListener("usercreateUi", _user_create_ui);
     }
 
     private void _user_create_ui()
     {
-        quitButton.GetComponent<CanvasGroup>().alpha = 1;
         inputFiledChat.GetComponent<CanvasGroup>().alpha = 1;
-    }
-
-    private void OnClick()
-    {
-        EventManager.Trigger("quitRoom", Main.User.name);
     }
 
     private void InputEndName(TMP_InputField inputField)
@@ -44,21 +41,10 @@ public class MainUi : MonoBehaviour
             EventManager.Trigger("get_name", inputField.text);
             //inputField.GetComponent<CanvasGroup>().alpha = 0;
             objName.SetActive(false);
+            ChatContent.SetActive(false);
         }
         
     }
-
-    private void InputEndChat(TMP_InputField inputField)
-    {
-        UnityEngine.Debug.Log("chat info"  + inputField.text);
-        string msg = inputField.text;
-        if(msg!= string.Empty)
-        {
-            inputField.text = string.Empty;
-            Chat(msg);
-        }
-    }
-
     void Chat(string msg)
     {
         var req = new SprotoType.chat.request();
@@ -70,6 +56,48 @@ public class MainUi : MonoBehaviour
             var rsp = data as SprotoType.chat.response;
             UnityEngine.Debug.LogFormat("server chat response, error_code: {0}, msg: {1}", rsp.error_code, rsp.msg);
         });
+    }
+
+    public void Pause(InputAction.CallbackContext context)
+    {
+        if(context.performed)
+        {
+            UnityEngine.Debug.Log("press" + context.phase);
+            EventManager.Trigger("PausePress");
+        }
+    }
+
+    public void EnterPress(InputAction.CallbackContext context)
+    {
+        if(context.performed)
+        {
+            UnityEngine.Debug.Log("chat info"  + inputFiledChat.text);
+            if(PlayerIsChat)
+            {
+                if(inputFiledChat.text == string.Empty)
+                {
+                    Cursor.visible = false;
+                    PlayerIsChat = !PlayerIsChat;
+                    ChatContent.SetActive(false);
+                }
+                else
+                {
+                    string msg = inputFiledChat.text;
+                    inputFiledChat.text = string.Empty;
+                    Chat(msg);
+                    inputFiledChat.ActivateInputField();
+                }
+                
+            }
+            else
+            {
+                ChatContent.SetActive(true);
+                inputFiledChat.ActivateInputField();
+                Cursor.visible = true;
+                PlayerIsChat = !PlayerIsChat;
+            }
+            
+        }
     }
 
     // Update is called once per frame

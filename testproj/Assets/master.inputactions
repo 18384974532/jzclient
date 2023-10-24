@@ -1,0 +1,54 @@
+{
+    "name": "master",
+    "maps": [
+        {
+            "name": "ui",
+            "id": "9bfad167-ade6-4f7d-9713-5bfa3e6bada8",
+            "actions": [
+                {
+                    "name": "Esc",
+                    "type": "Button",
+                    "id": "94171876-5fa8-40bd-b6d5-2942106b650a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Chat",
+                    "type": "Button",
+                    "id": "c2d21ded-0223-4217-828c-ba0d1d24520f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "20626c60-5985-4682-b365-36a29aff9c96",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Esc",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "390ba967-9fdf-4067-a7bf-9dee814306fd",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Chat",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

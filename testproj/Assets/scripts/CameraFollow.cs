@@ -20,6 +20,15 @@ public class CameraFollow : MonoBehaviour
     void Start()
     {
         EventManager.AddListener("setCamera", _set_camera);
+        EventManager.AddListener("senChange", _sen_change);
+    }
+
+    void _sen_change(object data)
+    {
+        float sen = (float)data;
+        sen = sen/10 + 0.05f;
+        rollSpeed = sen;
+        rotSpeed = sen;
     }
 
     private void _set_camera(object data)
@@ -29,6 +38,8 @@ public class CameraFollow : MonoBehaviour
         if (name == Main.User.name)
         {
             SetTarget(GameObject.Find(name));
+            Cursor.visible = false;
+            MainUi.PlayerIsChat = false;
         }
     }
     public void SetTarget(GameObject target)
@@ -45,6 +56,13 @@ public class CameraFollow : MonoBehaviour
             return;
         if(Camera.main == null)
             return;
+        if(EscMenu.GameIsPaused == true)
+            return;
+        if(MainUi.PlayerIsChat == true)
+        {
+            Debug.LogFormat("playerischat");
+            return;
+        }
         Vector3 targetPos = target.transform.position;
         Vector3 cameraPos;
         float d = distance * Mathf.Cos(roll);
